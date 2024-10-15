@@ -1,0 +1,79 @@
+#
+# The Short URL Public API Service
+# (Copyright 2024 by Richard Klein)
+#
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Short URL Public API Service - api.richarddklein.com/short-url/public-api
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+
+Resources:
+  # Define the Lambda function
+  ShortUrlPublicApiService:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.richarddklein.shorturlpublicapiservice.StreamLambdaHandler::handleRequest
+      Runtime: java21
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 90
+      Role: !GetAtt LambdaExecutionRole.Arn
+      SnapStart:
+        ApplyOn: "PublishedVersions"
+
+      # Defined below are the REST endpoints. For each endpoint, a pair of
+      # paths are defined. One path is for the case where the URL specifies
+      # either the API Gateway or localhost. The other path is for the case
+      # where the URL specifies the custom domain that redirects to the API
+      # Gateway. Thus, an endpoint URL can have one of three possible values:
+      #
+      # API Gateway:   <aws-api-ID>.execute-api.us-east-2.amazonaws.com/Prod/short-url/<endpoint>
+      # localhost:     localhost:3000/short-url/<endpoint>
+      # Custom Domain: api.richarddklein.com/short-url/<endpoint>
+      #
+      # When the service is running on your local machine, via the command
+      # `sam local start-api`, use the above `localhost` URL.
+      #
+      # When the service is running on AWS, use either the above `API Gateway`
+      # URL or the above `Custom Domain` URL. (It is recommended that you use
+      # the `Custom Domain` hostname, as it is simpler to remember and to type.)
+      #
+      # For a description of the functionality provided by the REST endpoints,
+      # see the comments in the `ShortUrlPublicApiControllerImpl` interface.
+      Events:
+        CreateMappingViaApiGatewayOrLocalHost:
+          Type: Api
+          Properties:
+            Path: /short-url/create-mapping
+            Method: POST
+        CreateMappingViaCustomDomain:
+          Type: Api
+          Properties:
+            Path: /create-mapping
+            Method: POST
+
+  # Define the IAM Role for the Lambda function
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaExecutionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # Write permission for CloudWatch logs
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"

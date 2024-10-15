@@ -1,0 +1,8 @@
+#
+# The Short URL Public API Service
+# (Copyright 2024 by Richard Klein)
+#
+
+.idea/workspace.xml
+.aws-sam/
+.codiumai
