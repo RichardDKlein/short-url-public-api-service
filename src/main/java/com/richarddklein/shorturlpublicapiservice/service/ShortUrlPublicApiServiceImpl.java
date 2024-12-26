@@ -5,7 +5,9 @@
 
 package com.richarddklein.shorturlpublicapiservice.service;
 
+import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndShortUrlUserArray;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
@@ -15,6 +17,12 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
     // ------------------------------------------------------------------------
 
     public ShortUrlPublicApiServiceImpl() {
+    }
+
+    @Override
+    public Mono<StatusAndShortUrlUserArray>
+    getAllUsers() {
+        return null;
     }
 
     // ------------------------------------------------------------------------

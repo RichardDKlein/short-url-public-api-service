@@ -4,7 +4,7 @@
 #
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Short URL Public API Service - api.richarddklein.com/short-url/public-api
+Description: Short URL Public API Service - api.richarddklein.com/short-url
 Globals:
   Api:
     EndpointConfiguration: REGIONAL
@@ -43,16 +43,16 @@ Resources:
       # For a description of the functionality provided by the REST endpoints,
       # see the comments in the `ShortUrlPublicApiControllerImpl` interface.
       Events:
-        CreateMappingViaApiGatewayOrLocalHost:
+        GetAllUsersViaApiGatewayOrLocalHost:
           Type: Api
           Properties:
-            Path: /short-url/create-mapping
-            Method: POST
-        CreateMappingViaCustomDomain:
+            Path: /short-url/get-all-users
+            Method: GET
+        GetAllUsersViaCustomDomain:
           Type: Api
           Properties:
-            Path: /create-mapping
-            Method: POST
+            Path: /get-all-users
+            Method: GET
 
   # Define the IAM Role for the Lambda function
   LambdaExecutionRole:
