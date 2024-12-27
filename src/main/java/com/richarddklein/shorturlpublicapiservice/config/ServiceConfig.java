@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class ServiceConfig {
     @Bean
     public ShortUrlPublicApiService
-    shortUrlMappingService() {
+    shortUrlPublicApiService() {
         return new ShortUrlPublicApiServiceImpl();
     }
 }
