@@ -10,4 +10,4 @@ PORT_NUMBER=$(echo $BASE_URL | \
 
 echo "Starting ShortUrlPublicApiService on localhost:$PORT_NUMBER"
 
-sam local start-api -p $PORT_NUMBER --env-vars env_prod.jsonn
+sam local start-api -p $PORT_NUMBER --env-vars env_prod.json
