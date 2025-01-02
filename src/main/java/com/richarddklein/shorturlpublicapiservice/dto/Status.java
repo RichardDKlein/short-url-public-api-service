@@ -5,8 +5,6 @@
 
 package com.richarddklein.shorturlpublicapiservice.dto;
 
-import com.richarddklein.shorturlcommonlibrary.status.ShortUrlPublicApiStatus;
-
 public class Status {
     private ShortUrlPublicApiStatus status;
     private String message;
