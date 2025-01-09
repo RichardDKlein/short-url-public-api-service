@@ -13,10 +13,14 @@ import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.S
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
 import com.richarddklein.shorturlpublicapiservice.service.ShortUrlPublicApiService;
 import org.springframework.http.*;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
+
+import static com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.ShortUrlUserStatus.NOT_LOGGED_IN;
 
 @RestController
 @RequestMapping({"/short-url", "/"})
@@ -69,25 +73,37 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
     }
 
     @Override
-    public Mono<ResponseEntity<Status>> logout() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,
-            ResponseCookie.from(AUTH_TOKEN, "")
-                .maxAge(0)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .path("/")
-                .build()
-                .toString());
+    public Mono<ResponseEntity<Status>> logout(ServerHttpRequest request) {
+        MultiValueMap<String, HttpCookie> cookies = request.getCookies();
+        HttpCookie authCookie = cookies.getFirst(AUTH_TOKEN);
+
+        if (authCookie == null) {
+            Status status = new Status(NOT_LOGGED_IN,
+                    "No user is currently logged in");
+
+            return Mono.just(
+                    new ResponseEntity<>(status, HttpStatus.BAD_REQUEST));
+        }
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add(HttpHeaders.SET_COOKIE,
+                ResponseCookie.from(AUTH_TOKEN, "")
+                        .maxAge(0)
+                        .httpOnly(true)
+                        .secure(true)
+                        .sameSite("None")
+                        .path("/")
+                        .build()
+                        .toString());
 
         Status status = new Status(
                 ShortUrlUserStatus.SUCCESS,
                 "Logged out successfully");
 
         return Mono.just(
-                new ResponseEntity<>(status, headers, HttpStatus.OK));
+                new ResponseEntity<>(status, responseHeaders, HttpStatus.OK));
     }
+
     // ------------------------------------------------------------------------
     // PRIVATE METHODS
     // ------------------------------------------------------------------------

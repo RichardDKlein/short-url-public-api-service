@@ -7,5 +7,6 @@ package com.richarddklein.shorturlpublicapiservice.dto;
 
 public enum ShortUrlPublicApiStatus {
     SUCCESS,
+    NOT_LOGGED_IN,
     UNKNOWN_ERROR,
 }
