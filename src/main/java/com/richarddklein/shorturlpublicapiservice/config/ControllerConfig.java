@@ -5,7 +5,6 @@
 
 package com.richarddklein.shorturlpublicapiservice.config;
 
-import com.richarddklein.shorturlcommonlibrary.environment.HostUtils;
 import com.richarddklein.shorturlpublicapiservice.controller.ShortUrlPublicApiController;
 import com.richarddklein.shorturlpublicapiservice.controller.ShortUrlPublicApiControllerImpl;
 import com.richarddklein.shorturlpublicapiservice.service.ShortUrlPublicApiService;

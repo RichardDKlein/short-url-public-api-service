@@ -49,6 +49,11 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
                     .header("Authorization", "Bearer " + adminJwtToken)
                     .bodyValue(shortUrlUser)
                     .retrieve()
+                    .onStatus(
+                        status -> !status.is2xxSuccessful(),
+                        // Don't throw an exception, just continue
+                        response -> Mono.empty()
+                    )
                     .toEntity(Status.class))
             );
     }
