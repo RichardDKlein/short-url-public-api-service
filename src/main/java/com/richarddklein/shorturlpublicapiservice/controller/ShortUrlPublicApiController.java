@@ -7,6 +7,7 @@ package com.richarddklein.shorturlpublicapiservice.controller;
 
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
+import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.entity.ShortUrlUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ import reactor.core.publisher.Mono;
 public interface ShortUrlPublicApiController {
     @PostMapping("/signup-user")
     Mono<ResponseEntity<Status>>
-    signupUser(@RequestBody UsernameAndPassword usernameAndPassword);
+    signupUser(@RequestBody ShortUrlUser shortUrlUser);
 
     @PostMapping("/login")
     Mono<ResponseEntity<Status>>

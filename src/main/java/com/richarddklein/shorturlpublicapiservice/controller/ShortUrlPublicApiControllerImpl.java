@@ -11,6 +11,7 @@ import com.richarddklein.shorturlcommonlibrary.environment.HostUtils;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.ShortUrlUserStatus;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
+import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.entity.ShortUrlUser;
 import com.richarddklein.shorturlpublicapiservice.service.ShortUrlPublicApiService;
 import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -44,8 +45,8 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
 
     @Override
     public Mono<ResponseEntity<Status>>
-    signupUser(@RequestBody UsernameAndPassword usernameAndPassword) {
-        return shortUrlPublicApiService.signupUser(usernameAndPassword)
+    signupUser(@RequestBody ShortUrlUser shortUrlUser) {
+        return shortUrlPublicApiService.signupUser(shortUrlUser)
             .map(serviceResponseEntity -> serviceResponseEntity);
     }
 

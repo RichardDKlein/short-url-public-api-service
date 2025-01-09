@@ -12,6 +12,7 @@ import com.richarddklein.shorturlcommonlibrary.environment.ParameterStoreAccesso
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndJwtToken;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
+import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.entity.ShortUrlUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -39,14 +40,14 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
 
     @Override
     public Mono<ResponseEntity<Status>>
-    signupUser(UsernameAndPassword usernameAndPassword) {
+    signupUser(ShortUrlUser shortUrlUser) {
         return hostUtils.getShortUrlUserServiceBaseUrl()
             .flatMap(baseUrl -> getAdminJwtToken(baseUrl)
                 .flatMap(adminJwtToken -> webClientBuilder.build()
                     .post()
                     .uri(baseUrl + "/signup")
                     .header("Authorization", "Bearer " + adminJwtToken)
-                    .bodyValue(usernameAndPassword)
+                    .bodyValue(shortUrlUser)
                     .retrieve()
                     .toEntity(Status.class))
             );
