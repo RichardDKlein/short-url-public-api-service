@@ -44,9 +44,7 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
     public Mono<ResponseEntity<Status>>
     signupUser(@RequestBody ShortUrlUser shortUrlUser) {
         return shortUrlPublicApiService.signupUser(shortUrlUser)
-            .map(serviceResponseEntity -> {
-                return serviceResponseEntity;
-            });
+            .map(serviceResponseEntity -> serviceResponseEntity);
     }
 
     @Override
@@ -81,11 +79,12 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
         HttpCookie authCookie = cookies.getFirst(AUTH_TOKEN);
 
         if (authCookie == null) {
-            Status status = new Status(NOT_LOGGED_IN,
-                    "No user is currently logged in");
-
             return Mono.just(
-                    new ResponseEntity<>(status, HttpStatus.BAD_REQUEST));
+                new ResponseEntity<>(
+                    new Status(
+                        NOT_LOGGED_IN,
+                        "No user is currently logged in"),
+                    HttpStatus.BAD_REQUEST));
         }
 
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -99,17 +98,36 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
                 .build()
                 .toString());
 
-        Status status = new Status(
-                ShortUrlUserStatus.SUCCESS,
-                "Logged out successfully");
-
         return Mono.just(
-                new ResponseEntity<>(status, responseHeaders, HttpStatus.OK));
+            new ResponseEntity<>(
+                new Status(
+                    ShortUrlUserStatus.SUCCESS,
+                    "Logged out successfully"),
+                responseHeaders,
+                HttpStatus.OK));
     }
 
     @Override
-    public Mono<ResponseEntity<StatusAndShortUrlUser>> getUser(String username) {
-        return null;
+    public Mono<ResponseEntity<StatusAndShortUrlUser>>
+    getUser(String username, ServerHttpRequest request) {
+        MultiValueMap<String, HttpCookie> cookies = request.getCookies();
+        HttpCookie authCookie = cookies.getFirst(AUTH_TOKEN);
+
+        if (authCookie == null) {
+            return Mono.just(
+                new ResponseEntity<>(
+                    new StatusAndShortUrlUser(
+                        new Status(
+                            NOT_LOGGED_IN,
+                            "No user is currently logged in"),
+                        null),
+                        HttpStatus.UNAUTHORIZED));
+        }
+
+        String jwtToken = authCookie.getValue();
+
+        return shortUrlPublicApiService.getUser(username, jwtToken)
+                .map(serviceResponseEntity -> serviceResponseEntity);
     }
 
     // ------------------------------------------------------------------------

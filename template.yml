@@ -76,6 +76,16 @@ Resources:
           Properties:
             Path: /logout
             Method: POST
+        GetUserViaApiGatewayOrLocalHost:
+          Type: Api
+          Properties:
+            Path: /short-url/get-user/{proxy+}
+            Method: GET
+        GetUserViaCustomDomain:
+          Type: Api
+          Properties:
+            Path: /get-user/{proxy+}
+            Method: GET
 
   # Define the IAM Role for the Lambda function
   LambdaExecutionRole:

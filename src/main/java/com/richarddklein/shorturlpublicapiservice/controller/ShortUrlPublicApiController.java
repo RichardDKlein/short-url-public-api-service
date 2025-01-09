@@ -33,5 +33,5 @@ public interface ShortUrlPublicApiController {
 
     @GetMapping("/get-user/{username}")
     Mono<ResponseEntity<StatusAndShortUrlUser>>
-    getUser(@PathVariable String username);
+    getUser(@PathVariable String username, ServerHttpRequest request);
 }

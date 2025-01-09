@@ -9,19 +9,27 @@ import java.util.Base64;
 
 import com.richarddklein.shorturlcommonlibrary.environment.HostUtils;
 import com.richarddklein.shorturlcommonlibrary.environment.ParameterStoreAccessor;
+import com.richarddklein.shorturlcommonlibrary.security.util.JwtUtils;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndJwtToken;
+import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndShortUrlUser;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.entity.ShortUrlUser;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import static com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.ShortUrlUserStatus.WRONG_USER;
+
 @Service
 public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
+    private static final String ADMIN_ROLE = "ADMIN";
+
     private final HostUtils hostUtils;
     private final ParameterStoreAccessor parameterStoreAccessor;
+    private final JwtUtils jwtUtils;
     private final WebClient.Builder webClientBuilder;
 
     // ------------------------------------------------------------------------
@@ -31,10 +39,12 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
     public ShortUrlPublicApiServiceImpl(
             HostUtils hostUtils,
             ParameterStoreAccessor parameterStoreAccessor,
+            JwtUtils jwtUtils,
             WebClient.Builder webClientBuilder) {
 
         this.hostUtils = hostUtils;
         this.parameterStoreAccessor = parameterStoreAccessor;
+        this.jwtUtils = jwtUtils;
         this.webClientBuilder = webClientBuilder;
     }
 
@@ -76,6 +86,40 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
                     )
                     .toEntity(StatusAndJwtToken.class))
             );
+    }
+
+    @Override
+    public Mono<ResponseEntity<StatusAndShortUrlUser>>
+    getUser(String username, String jwtToken) {
+        return jwtUtils.extractUsernameAndRoleFromToken(jwtToken)
+            .flatMap(usernameAndRole -> {
+                if (!usernameAndRole.getRole().equals(ADMIN_ROLE) &&
+                        !usernameAndRole.getUsername().equals(username)) {
+                    return Mono.just(
+                        new ResponseEntity<>(
+                            new StatusAndShortUrlUser(
+                                new Status(
+                                    WRONG_USER,
+                                    "Must be logged in as specified user or as admin"),
+                                null),
+                            HttpStatus.FORBIDDEN
+                        )
+                    );
+                }
+
+                return hostUtils.getShortUrlUserServiceBaseUrl()
+                    .flatMap(baseUrl -> webClientBuilder.build()
+                        .get()
+                        .uri(baseUrl + "/specific/" + username)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .retrieve()
+                        .onStatus(
+                            status -> !status.is2xxSuccessful(),
+                            // Don't throw an exception, just continue
+                            response -> Mono.empty()
+                        )
+                        .toEntity(StatusAndShortUrlUser.class));
+            });
     }
 
     // ------------------------------------------------------------------------
