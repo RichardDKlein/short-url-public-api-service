@@ -24,14 +24,10 @@ public class ControllerConfig {
     @Autowired
     ShortUrlPublicApiService shortUrlPublicApiService;
 
-    @Autowired
-    HostUtils hostUtils;
-
     @Bean
     public ShortUrlPublicApiController
     shortUrlPublicApiController() {
         return new ShortUrlPublicApiControllerImpl(
-                shortUrlPublicApiService,
-                hostUtils);
+                shortUrlPublicApiService);
     }
 }

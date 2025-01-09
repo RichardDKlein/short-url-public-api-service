@@ -7,7 +7,6 @@ package com.richarddklein.shorturlpublicapiservice.controller;
 
 import java.util.Objects;
 
-import com.richarddklein.shorturlcommonlibrary.environment.HostUtils;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.ShortUrlUserStatus;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
@@ -29,18 +28,15 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
     private static final String AUTH_TOKEN = "auth_token";
 
     private final ShortUrlPublicApiService shortUrlPublicApiService;
-    private final HostUtils hostUtils;
 
     // ------------------------------------------------------------------------
     // PUBLIC METHODS
     // ------------------------------------------------------------------------
 
     public ShortUrlPublicApiControllerImpl(
-            ShortUrlPublicApiService shortUrlPublicApiService,
-            HostUtils hostUtils) {
+            ShortUrlPublicApiService shortUrlPublicApiService) {
 
         this.shortUrlPublicApiService = shortUrlPublicApiService;
-        this.hostUtils = hostUtils;
     }
 
     @Override
@@ -48,7 +44,6 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
     signupUser(@RequestBody ShortUrlUser shortUrlUser) {
         return shortUrlPublicApiService.signupUser(shortUrlUser)
             .map(serviceResponseEntity -> {
-                System.out.println("====> serviceResponseEntity: " + serviceResponseEntity);
                 return serviceResponseEntity;
             });
     }
