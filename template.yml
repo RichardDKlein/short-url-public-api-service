@@ -46,6 +46,16 @@ Resources:
       # For a description of the functionality provided by the REST endpoints,
       # see the comments in the `ShortUrlPublicApiControllerImpl` interface.
       Events:
+        SignupUserViaApiGatewayOrLocalHost:
+          Type: Api
+          Properties:
+            Path: /short-url/signup-user
+            Method: POST
+        SignupUserViaCustomDomain:
+          Type: Api
+          Properties:
+            Path: /signup-user
+            Method: POST
         LoginViaApiGatewayOrLocalHost:
           Type: Api
           Properties:
