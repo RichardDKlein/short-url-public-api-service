@@ -15,6 +15,10 @@ import reactor.core.publisher.Mono;
 
 @SuppressWarnings("unused")
 public interface ShortUrlPublicApiController {
+    @PostMapping("/signup-user")
+    Mono<ResponseEntity<Status>>
+    signupUser(@RequestBody UsernameAndPassword usernameAndPassword);
+
     @PostMapping("/login")
     Mono<ResponseEntity<Status>>
     login(@RequestBody UsernameAndPassword usernameAndPassword);

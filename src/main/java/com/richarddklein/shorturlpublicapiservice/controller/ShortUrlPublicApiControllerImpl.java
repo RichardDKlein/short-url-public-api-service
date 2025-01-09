@@ -44,6 +44,13 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
 
     @Override
     public Mono<ResponseEntity<Status>>
+    signupUser(@RequestBody UsernameAndPassword usernameAndPassword) {
+        return shortUrlPublicApiService.signupUser(usernameAndPassword)
+            .map(serviceResponseEntity -> serviceResponseEntity);
+    }
+
+    @Override
+    public Mono<ResponseEntity<Status>>
     login(@RequestBody UsernameAndPassword usernameAndPassword) {
         return shortUrlPublicApiService.login(usernameAndPassword)
             .map(serviceResponseEntity -> {
@@ -52,10 +59,6 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
                         serviceResponseEntity.getBody()).getStatus();
                 String jwtToken = Objects.requireNonNull(
                         serviceResponseEntity.getBody()).getJwtToken();
-
-                ResponseEntity<Status> responseEntity = ResponseEntity
-                        .status(httpStatus)
-                        .body(status);
 
                 HttpHeaders headers = new HttpHeaders();
                 if (jwtToken != null && !jwtToken.isBlank()) {
@@ -87,14 +90,14 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add(HttpHeaders.SET_COOKIE,
-                ResponseCookie.from(AUTH_TOKEN, "")
-                        .maxAge(0)
-                        .httpOnly(true)
-                        .secure(true)
-                        .sameSite("None")
-                        .path("/")
-                        .build()
-                        .toString());
+            ResponseCookie.from(AUTH_TOKEN, "")
+                .maxAge(0)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .build()
+                .toString());
 
         Status status = new Status(
                 ShortUrlUserStatus.SUCCESS,
