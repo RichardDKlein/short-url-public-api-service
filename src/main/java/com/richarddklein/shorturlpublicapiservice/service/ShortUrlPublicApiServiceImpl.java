@@ -108,17 +108,18 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
                 }
 
                 return hostUtils.getShortUrlUserServiceBaseUrl()
-                    .flatMap(baseUrl -> webClientBuilder.build()
-                        .get()
-                        .uri(baseUrl + "/specific/" + username)
-                        .header("Authorization", "Bearer " + jwtToken)
-                        .retrieve()
-                        .onStatus(
-                            status -> !status.is2xxSuccessful(),
-                            // Don't throw an exception, just continue
-                            response -> Mono.empty()
-                        )
-                        .toEntity(StatusAndShortUrlUser.class));
+                    .flatMap(baseUrl -> getAdminJwtToken(baseUrl)
+                        .flatMap(adminJwtToken -> webClientBuilder.build()
+                            .get()
+                            .uri(baseUrl + "/specific/" + username)
+                            .header("Authorization", "Bearer " + adminJwtToken)
+                            .retrieve()
+                            .onStatus(
+                                status -> !status.is2xxSuccessful(),
+                                // Don't throw an exception, just continue
+                                response -> Mono.empty()
+                            )
+                            .toEntity(StatusAndShortUrlUser.class));
             });
     }
 
