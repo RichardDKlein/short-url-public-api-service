@@ -5,12 +5,13 @@
 
 package com.richarddklein.shorturlpublicapiservice.service;
 
+import java.util.Base64;
+
 import com.richarddklein.shorturlcommonlibrary.environment.HostUtils;
 import com.richarddklein.shorturlcommonlibrary.environment.ParameterStoreAccessor;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndJwtToken;
-import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndShortUrlUserArray;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
-import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -36,22 +37,23 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
     }
 
     @Override
-    public Mono<StatusAndJwtToken>
+    public Mono<ResponseEntity<StatusAndJwtToken>>
     login(UsernameAndPassword usernameAndPassword) {
-        return null;
-    }
-
-    @Override
-    public Mono<StatusAndShortUrlUserArray>
-    getAllUsers(ServerHttpRequest request) {
-        return hostUtils.getShortUrlUserServiceBaseUrl(request)
-            .flatMap(baseUrl -> getAdminJwtToken(baseUrl)
-            .flatMap(adminJwtToken -> webClientBuilder.build()
-                .get()
-                .uri(baseUrl + "/all")
-                .header("Authorization", "Bearer " + adminJwtToken)
-                .retrieve()
-                .bodyToMono(StatusAndShortUrlUserArray.class))
+        return hostUtils.getShortUrlUserServiceBaseUrl()
+            .flatMap(baseUrl -> {
+                System.out.println("====> baseUrl: " + baseUrl);
+                        return getAdminJwtToken(baseUrl)
+                                .flatMap(adminJwtToken -> {
+                                    System.out.println("====> adminJwtToken: " + adminJwtToken);
+                                    return webClientBuilder.build()
+                                            .post()
+                                            .uri(baseUrl + "/login")
+                                            .header("Authorization", "Bearer " + adminJwtToken)
+                                            .bodyValue(usernameAndPassword)
+                                            .retrieve()
+                                            .toEntity(StatusAndJwtToken.class);
+                                });
+                    }
             );
     }
 
@@ -61,13 +63,20 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
 
     private Mono<String> getAdminJwtToken(String baseUrl) {
         return parameterStoreAccessor.getAdminUsername().flatMap(adminUsername ->
-            parameterStoreAccessor.getAdminPassword().flatMap(adminPassword ->
-                webClientBuilder.build()
-                    .get()
-                    .uri(baseUrl + "/admin-jwt")
-                    .header("Authorization",
-                            "Basic " + adminUsername + ":" + adminPassword)
-                    .retrieve()
-                    .bodyToMono(String.class)));
+                parameterStoreAccessor.getAdminPassword().flatMap(adminPassword -> {
+                    System.out.println("====> adminUsername: " + adminUsername);
+                    System.out.println("====> adminPassword: " + adminPassword);
+                    String auth = adminUsername + ":" + adminPassword;
+                    String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
+
+                    return webClientBuilder
+                        .build()
+                        .get()
+                        .uri(baseUrl + "/admin-jwt")
+                        .header("Authorization", "Basic " + encodedAuth)
+                        .retrieve()
+                        .bodyToMono(StatusAndJwtToken.class)
+                            .map(StatusAndJwtToken::getJwtToken);
+                }));
     }
 }

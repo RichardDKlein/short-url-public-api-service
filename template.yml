@@ -46,16 +46,16 @@ Resources:
       # For a description of the functionality provided by the REST endpoints,
       # see the comments in the `ShortUrlPublicApiControllerImpl` interface.
       Events:
-        GetAllUsersViaApiGatewayOrLocalHost:
+        LoginViaApiGatewayOrLocalHost:
           Type: Api
           Properties:
-            Path: /short-url/get-all-users
-            Method: GET
-        GetAllUsersViaCustomDomain:
+            Path: /short-url/login
+            Method: POST
+        LoginViaCustomDomain:
           Type: Api
           Properties:
-            Path: /get-all-users
-            Method: GET
+            Path: /login
+            Method: POST
 
   # Define the IAM Role for the Lambda function
   LambdaExecutionRole:
@@ -80,6 +80,31 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: "*"
+              # Read/write permission for DynamoDB
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                  - dynamodb:Query
+                Resource: "*"
+              # Custom read/write policy for SSM parameter `adminPassword`
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                  - ssm:PutParameter
+                Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/shortUrl/users/adminPassword
+              # Read policy for other SSM parameters
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                Resource:
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/shortUrl/users/adminUsername
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/shortUrl/users/baseUrlAwsProd
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/shortUrl/users/baseUrlAwsTest
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/shortUrl/users/baseUrlLocal
 
 Parameters:
   Profile:

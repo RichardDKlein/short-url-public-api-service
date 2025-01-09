@@ -6,15 +6,11 @@
 package com.richarddklein.shorturlpublicapiservice.service;
 
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndJwtToken;
-import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndShortUrlUserArray;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
-import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 
 public interface ShortUrlPublicApiService {
-    Mono<StatusAndJwtToken>
+    Mono<ResponseEntity<StatusAndJwtToken>>
     login(UsernameAndPassword usernameAndPassword);
-
-    Mono<StatusAndShortUrlUserArray>
-    getAllUsers(ServerHttpRequest request);
 }
