@@ -41,24 +41,31 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
     public Mono<ResponseEntity<Status>>
     login(@RequestBody UsernameAndPassword usernameAndPassword) {
         return shortUrlPublicApiService.login(usernameAndPassword)
-            .flatMap(responseEntity -> {
-                HttpStatusCode httpStatus = responseEntity.getStatusCode();
+            .map(serviceResponseEntity -> {
+                HttpStatusCode httpStatus = serviceResponseEntity.getStatusCode();
                 Status status = Objects.requireNonNull(
-                        responseEntity.getBody()).getStatus();
+                        serviceResponseEntity.getBody()).getStatus();
                 String jwtToken = Objects.requireNonNull(
-                        responseEntity.getBody()).getJwtToken();
+                        serviceResponseEntity.getBody()).getJwtToken();
 
-                ResponseCookie.ResponseCookieBuilder authCookieBuilder =
+                ResponseEntity<Status> responseEntity = ResponseEntity
+                        .status(httpStatus)
+                        .body(status);
+
+                if (jwtToken == null || jwtToken.isBlank()) {
+                    return responseEntity;
+                }
+
+                responseEntity.getHeaders().add(HttpHeaders.SET_COOKIE,
                     ResponseCookie.from(AUTH_TOKEN, jwtToken)
                         .httpOnly(true)
                         .secure(true)
                         .sameSite("None")
-                        .path("/");
+                        .path("/")
+                        .build()
+                        .toString());
 
-                return Mono.just(ResponseEntity
-                        .status(httpStatus)
-                        .header(HttpHeaders.SET_COOKIE, authCookieBuilder.build().toString())
-                        .body(status));
+                return responseEntity;
             });
     }
 
