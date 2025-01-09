@@ -47,7 +47,10 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
     public Mono<ResponseEntity<Status>>
     signupUser(@RequestBody ShortUrlUser shortUrlUser) {
         return shortUrlPublicApiService.signupUser(shortUrlUser)
-            .map(serviceResponseEntity -> serviceResponseEntity);
+            .map(serviceResponseEntity -> {
+                System.out.println("====> serviceResponseEntity: " + serviceResponseEntity);
+                return serviceResponseEntity;
+            });
     }
 
     @Override
