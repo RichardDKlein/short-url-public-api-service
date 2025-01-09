@@ -8,6 +8,7 @@ package com.richarddklein.shorturlpublicapiservice.controller;
 import java.util.Objects;
 
 import com.richarddklein.shorturlcommonlibrary.environment.HostUtils;
+import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.ShortUrlUserStatus;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
 import com.richarddklein.shorturlpublicapiservice.service.ShortUrlPublicApiService;
@@ -54,7 +55,8 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
 
                 HttpHeaders headers = new HttpHeaders();
                 if (jwtToken != null && !jwtToken.isBlank()) {
-                    headers.add(HttpHeaders.SET_COOKIE, ResponseCookie.from(AUTH_TOKEN, jwtToken)
+                    headers.add(HttpHeaders.SET_COOKIE,
+                        ResponseCookie.from(AUTH_TOKEN, jwtToken)
                             .httpOnly(true)
                             .secure(true)
                             .sameSite("None")
@@ -66,6 +68,22 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
             });
     }
 
+    @Override
+    public Mono<ResponseEntity<Status>> logout() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE,
+            ResponseCookie.from(AUTH_TOKEN, "")
+                .maxAge(0)
+                .build()
+                .toString());
+
+        Status status = new Status(
+                ShortUrlUserStatus.SUCCESS,
+                "Logged out successfully");
+
+        return Mono.just(
+                new ResponseEntity<>(status, headers, HttpStatus.OK));
+    }
     // ------------------------------------------------------------------------
     // PRIVATE METHODS
     // ------------------------------------------------------------------------

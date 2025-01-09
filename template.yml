@@ -56,6 +56,16 @@ Resources:
           Properties:
             Path: /login
             Method: POST
+        LogoutViaApiGatewayOrLocalHost:
+          Type: Api
+          Properties:
+            Path: /short-url/logout
+            Method: POST
+        LogoutViaCustomDomain:
+          Type: Api
+          Properties:
+            Path: /logout
+            Method: POST
 
   # Define the IAM Role for the Lambda function
   LambdaExecutionRole:

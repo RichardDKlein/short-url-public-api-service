@@ -17,4 +17,8 @@ public interface ShortUrlPublicApiController {
     @PostMapping("/login")
     Mono<ResponseEntity<Status>>
     login(@RequestBody UsernameAndPassword usernameAndPassword);
+
+    @PostMapping("/logout")
+    Mono<ResponseEntity<Status>>
+    logout();
 }
