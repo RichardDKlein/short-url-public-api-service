@@ -85,7 +85,7 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
                     "No user is currently logged in");
 
             return Mono.just(
-                    new ResponseEntity<>(status, HttpStatus.NO_CONTENT));
+                    new ResponseEntity<>(status, HttpStatus.BAD_REQUEST));
         }
 
         HttpHeaders responseHeaders = new HttpHeaders();
