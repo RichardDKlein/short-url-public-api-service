@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.ShortUrlUserStatus;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
+import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndShortUrlUser;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.entity.ShortUrlUser;
 import com.richarddklein.shorturlpublicapiservice.service.ShortUrlPublicApiService;
@@ -84,7 +85,7 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
                     "No user is currently logged in");
 
             return Mono.just(
-                    new ResponseEntity<>(status, HttpStatus.BAD_REQUEST));
+                    new ResponseEntity<>(status, HttpStatus.NO_CONTENT));
         }
 
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -104,6 +105,11 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
 
         return Mono.just(
                 new ResponseEntity<>(status, responseHeaders, HttpStatus.OK));
+    }
+
+    @Override
+    public Mono<ResponseEntity<StatusAndShortUrlUser>> getUser(String username) {
+        return null;
     }
 
     // ------------------------------------------------------------------------
