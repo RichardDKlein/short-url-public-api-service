@@ -40,20 +40,14 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
     public Mono<ResponseEntity<StatusAndJwtToken>>
     login(UsernameAndPassword usernameAndPassword) {
         return hostUtils.getShortUrlUserServiceBaseUrl()
-            .flatMap(baseUrl -> {
-                System.out.println("====> baseUrl: " + baseUrl);
-                        return getAdminJwtToken(baseUrl)
-                                .flatMap(adminJwtToken -> {
-                                    System.out.println("====> adminJwtToken: " + adminJwtToken);
-                                    return webClientBuilder.build()
-                                            .post()
-                                            .uri(baseUrl + "/login")
-                                            .header("Authorization", "Bearer " + adminJwtToken)
-                                            .bodyValue(usernameAndPassword)
-                                            .retrieve()
-                                            .toEntity(StatusAndJwtToken.class);
-                                });
-                    }
+            .flatMap(baseUrl -> getAdminJwtToken(baseUrl)
+                .flatMap(adminJwtToken -> webClientBuilder.build()
+                    .post()
+                    .uri(baseUrl + "/login")
+                    .header("Authorization", "Bearer " + adminJwtToken)
+                    .bodyValue(usernameAndPassword)
+                    .retrieve()
+                    .toEntity(StatusAndJwtToken.class))
             );
     }
 
@@ -64,8 +58,6 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
     private Mono<String> getAdminJwtToken(String baseUrl) {
         return parameterStoreAccessor.getAdminUsername().flatMap(adminUsername ->
                 parameterStoreAccessor.getAdminPassword().flatMap(adminPassword -> {
-                    System.out.println("====> adminUsername: " + adminUsername);
-                    System.out.println("====> adminPassword: " + adminPassword);
                     String auth = adminUsername + ":" + adminPassword;
                     String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
 

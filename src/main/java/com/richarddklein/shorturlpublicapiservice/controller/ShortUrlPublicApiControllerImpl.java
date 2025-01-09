@@ -74,6 +74,10 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
         headers.add(HttpHeaders.SET_COOKIE,
             ResponseCookie.from(AUTH_TOKEN, "")
                 .maxAge(0)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
                 .build()
                 .toString());
 
