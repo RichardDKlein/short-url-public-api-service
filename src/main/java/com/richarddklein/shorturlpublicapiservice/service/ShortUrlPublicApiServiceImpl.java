@@ -119,7 +119,7 @@ public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {
                                 // Don't throw an exception, just continue
                                 response -> Mono.empty()
                             )
-                            .toEntity(StatusAndShortUrlUser.class));
+                            .toEntity(StatusAndShortUrlUser.class)));
             });
     }
 
