@@ -52,20 +52,17 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
                         .status(httpStatus)
                         .body(status);
 
-                if (jwtToken == null || jwtToken.isBlank()) {
-                    return responseEntity;
+                HttpHeaders headers = new HttpHeaders();
+                if (jwtToken != null && !jwtToken.isBlank()) {
+                    headers.add(HttpHeaders.SET_COOKIE, ResponseCookie.from(AUTH_TOKEN, jwtToken)
+                            .httpOnly(true)
+                            .secure(true)
+                            .sameSite("None")
+                            .path("/")
+                            .build()
+                            .toString());
                 }
-
-                responseEntity.getHeaders().add(HttpHeaders.SET_COOKIE,
-                    ResponseCookie.from(AUTH_TOKEN, jwtToken)
-                        .httpOnly(true)
-                        .secure(true)
-                        .sameSite("None")
-                        .path("/")
-                        .build()
-                        .toString());
-
-                return responseEntity;
+                return new ResponseEntity<>(status, headers, httpStatus);
             });
     }
 
