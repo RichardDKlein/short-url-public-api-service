@@ -23,13 +23,13 @@ public interface ShortUrlPublicApiController {
     Mono<ResponseEntity<Status>>
     signupUser(@RequestBody ShortUrlUser shortUrlUser);
 
-    @PostMapping("/login")
+    @PostMapping("/login-user")
     Mono<ResponseEntity<Status>>
-    login(@RequestBody UsernameAndPassword usernameAndPassword);
+    loginUser(@RequestBody UsernameAndPassword usernameAndPassword);
 
-    @PostMapping("/logout")
+    @PostMapping("/logout-user")
     Mono<ResponseEntity<Status>>
-    logout(ServerHttpRequest request);
+    logoutUser(ServerHttpRequest request);
 
     @GetMapping("/get-user/{username}")
     Mono<ResponseEntity<StatusAndShortUrlUser>>

@@ -56,25 +56,25 @@ Resources:
           Properties:
             Path: /signup-user
             Method: POST
-        LoginViaApiGatewayOrLocalHost:
+        LoginUserViaApiGatewayOrLocalHost:
           Type: Api
           Properties:
-            Path: /short-url/login
+            Path: /short-url/login-user
             Method: POST
-        LoginViaCustomDomain:
+        LoginUserViaCustomDomain:
           Type: Api
           Properties:
-            Path: /login
+            Path: /login-user
             Method: POST
-        LogoutViaApiGatewayOrLocalHost:
+        LogoutUserViaApiGatewayOrLocalHost:
           Type: Api
           Properties:
-            Path: /short-url/logout
+            Path: /short-url/logout-user
             Method: POST
-        LogoutViaCustomDomain:
+        LogoutUserViaCustomDomain:
           Type: Api
           Properties:
-            Path: /logout
+            Path: /logout-user
             Method: POST
         GetUserViaApiGatewayOrLocalHost:
           Type: Api

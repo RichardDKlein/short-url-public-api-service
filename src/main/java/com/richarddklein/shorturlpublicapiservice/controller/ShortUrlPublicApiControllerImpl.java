@@ -49,7 +49,7 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
 
     @Override
     public Mono<ResponseEntity<Status>>
-    login(@RequestBody UsernameAndPassword usernameAndPassword) {
+    loginUser(@RequestBody UsernameAndPassword usernameAndPassword) {
         return shortUrlPublicApiService.login(usernameAndPassword)
             .map(serviceResponseEntity -> {
                 HttpStatusCode httpStatus = serviceResponseEntity.getStatusCode();
@@ -74,7 +74,8 @@ public class ShortUrlPublicApiControllerImpl implements ShortUrlPublicApiControl
     }
 
     @Override
-    public Mono<ResponseEntity<Status>> logout(ServerHttpRequest request) {
+    public Mono<ResponseEntity<Status>>
+    logoutUser(ServerHttpRequest request) {
         MultiValueMap<String, HttpCookie> cookies = request.getCookies();
         HttpCookie authCookie = cookies.getFirst(AUTH_TOKEN);
 
