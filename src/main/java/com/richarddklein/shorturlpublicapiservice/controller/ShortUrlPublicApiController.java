@@ -5,10 +5,10 @@
 
 package com.richarddklein.shorturlpublicapiservice.controller;
 
-import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndShortUrlUser;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.entity.ShortUrlUser;
+import com.richarddklein.shorturlcommonlibrary.service.status.Status;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;

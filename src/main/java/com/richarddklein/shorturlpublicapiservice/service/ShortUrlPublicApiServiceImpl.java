@@ -10,18 +10,18 @@ import java.util.Base64;
 import com.richarddklein.shorturlcommonlibrary.environment.HostUtils;
 import com.richarddklein.shorturlcommonlibrary.environment.ParameterStoreAccessor;
 import com.richarddklein.shorturlcommonlibrary.security.util.JwtUtils;
-import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndJwtToken;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndShortUrlUser;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.entity.ShortUrlUser;
+import com.richarddklein.shorturlcommonlibrary.service.status.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.ShortUrlUserStatus.WRONG_USER;
+import static com.richarddklein.shorturlcommonlibrary.service.status.ShortUrlStatus.WRONG_USER;
 
 @Service
 public class ShortUrlPublicApiServiceImpl implements ShortUrlPublicApiService {

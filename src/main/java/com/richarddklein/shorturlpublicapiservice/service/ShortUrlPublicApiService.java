@@ -5,11 +5,11 @@
 
 package com.richarddklein.shorturlpublicapiservice.service;
 
-import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.Status;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndJwtToken;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.StatusAndShortUrlUser;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.dto.UsernameAndPassword;
 import com.richarddklein.shorturlcommonlibrary.service.shorturluserservice.entity.ShortUrlUser;
+import com.richarddklein.shorturlcommonlibrary.service.status.Status;
 import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 
