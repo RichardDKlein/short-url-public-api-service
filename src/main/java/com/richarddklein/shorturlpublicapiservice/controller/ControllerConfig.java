@@ -3,10 +3,8 @@
  * (Copyright 2024 by Richard Klein)
  */
 
-package com.richarddklein.shorturlpublicapiservice.config;
+package com.richarddklein.shorturlpublicapiservice.controller;
 
-import com.richarddklein.shorturlpublicapiservice.controller.ShortUrlPublicApiController;
-import com.richarddklein.shorturlpublicapiservice.controller.ShortUrlPublicApiControllerImpl;
 import com.richarddklein.shorturlpublicapiservice.service.ShortUrlPublicApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
